@@ -11,9 +11,14 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.di.dagger2.di.AppComponent;
+
+import javax.inject.Inject;
+
 public class MainActivity extends AppCompatActivity {
 
-    private WeatherFacade facade;
+    @Inject
+    WeatherFacade facade;
 
     private EditText editText;
     private Button button;
@@ -22,14 +27,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getApplicationComponent().inject(this);
+
         editText = (EditText) findViewById(R.id.edittextId);
         button = (Button) findViewById(R.id.buttonId);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                facade = new WeatherFacade(getApplicationContext());
                 facade.fetchWeather(editText.getText().toString());
             }
         });
+    }
+
+    private AppComponent getApplicationComponent() {
+        return ((AppApplication) getApplication()).getApplicationComponent();
     }
 }
